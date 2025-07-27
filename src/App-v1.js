@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 
 const tempMovieData = [
   {
@@ -50,74 +50,12 @@ const tempWatchedData = [
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
-const KEY ="b3a11912"
+
 
 
 export default function App() {
-  const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-
-
-  // useEffect(() => {
-  //   console.log('After initial render');
-    
-  // },[])
-
-  // useEffect(() => {
-  //   console.log('after every render');
-    
-  // })
-
-  // useEffect(() => {
-  //   console.log('D');
-    
-  // },[query])
-
-  // console.log('during render');
-
-  useEffect(function(){
-    async function fetchMovies() {
-
-      try  {
-        setIsLoading(true);
-        setError('')
-        const res = await fetch(
-          `https://www.omdbapi.com/?s=${query}&apikey=${KEY}`
-        );
-      
-
-        if (!res.ok) {
-          throw new Error("Something went wrong with fetching the movies");
-          
-        }
-        const data = await res.json();
-
-        if(data.Response === "False") {
-          throw new Error("movie not found");
-        }
-        setMovies(data.Search)
-        setIsLoading(false);
-      }
-    
-      catch (err) {
-        setError(err.message);
-      }
-      finally {
-        setIsLoading(false);
-       
-      }
-    }
-    if (!query.length) {
-      setMovies([])
-      setError("");
-      return;
-    }
-    fetchMovies();
-  }, [query]);
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
 
 
   return (
@@ -125,16 +63,12 @@ export default function App() {
       <NavBar>
       
         <Logo />
-        <Search query={query} setQuery={setQuery}/>
+        <Search />
         <NumResults movies={movies}/>
       </NavBar>
       <Main>   
         <Box movies={movies}>
-          {/* {isLoading ? <Loader /> :<MovieList movies={movies} />} */}
-
-          {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
-          {error && <ErrorMessage message={error} />}
+          <MovieList movies={movies} />
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
@@ -146,13 +80,6 @@ export default function App() {
   );
 }
 
-function Loader() {
-  return <p className="loader">Loading...</p>
-  }
-function ErrorMessage({message}) {
-  return <p className="error">
-    <span>⛔</span> {message}</p>
-}
 function NavBar({children}) { 
 
     return (
@@ -170,8 +97,8 @@ function Logo(){
       </div>
   );
 }
-function Search({query, setQuery}) {
-
+function Search() {
+  const [query, setQuery] = useState("");
 
   return (
     <input
