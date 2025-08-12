@@ -10,15 +10,10 @@ const KEY ="b3a11912"
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [watched, setWatched] = useState([]);
-  // const [watched, setWatched] = useState(function() {
-  //   const storedValue = localStorage.getItem("watched") ;
-  //   return storedValue
-  // })
-// 
 
 
   function handleSelectMovie(id) {
@@ -34,12 +29,6 @@ export default function App() {
   function handleDeleteWatched(id) {
     setWatched((watched)=> watched.filter((movie)=>movie.imdbID !== id))
   }
-  useEffect(function() {
-    const storedValue = localStorage.setItem("watched", JSON.stringify(watched));
-    return JSON.parse(storedValue);
-    
-
-  }, [watched]);
 
   useEffect(function(){
     const controller = new AbortController();
@@ -235,8 +224,6 @@ function MovieDetails({selectedId,onCloseMovie,onAddWhatched,watched}){
      Director:director,
      Genre:genre 
     } = movie;
-
-
   function handleAdd(){
       const newWatchedMovie = {
         imdbID:selectedId,
@@ -249,7 +236,6 @@ function MovieDetails({selectedId,onCloseMovie,onAddWhatched,watched}){
       };
       onAddWhatched(newWatchedMovie);
       onCloseMovie();
-      
 
   }
   useEffect(function() {
